@@ -6,13 +6,13 @@ const passport = require('passport')
 
 const User = require('../models/User.model')
 
-// const checkForAuth = (req, res, next) => {
-//   if(req.isAuthenticated()){
-//     return next()
-//   }else{
-//     res.redirect('/login')
-//   }
-// }
+const checkForAuth = (req, res, next) => {
+  if(req.isAuthenticated()){
+    return next()
+  }else{
+    res.redirect('/login')
+  }
+}
 
 /* Create New User */
 router.post('/signup', (req, res, next) => {
@@ -75,6 +75,21 @@ router.post('/login', (req, res) => {
       }
     })
   })(req, res)
+})
+
+router.get('/loggedin', (req, res, next) => {
+  if (req.user) {
+    User.findById(req.user._id)
+      .populate('pokedex')
+      .then((result) => {
+        res.send({ message: 'Log in verified', result })
+      })
+      .catch(() => {
+        res.send({ message: 'Error verifing the user' })
+      })
+  } else {
+    res.send(req.user)
+  }
 })
 
 module.exports = router

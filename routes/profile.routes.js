@@ -12,15 +12,6 @@ const Pokemon = require('../models/Pokemon.model')
 //   }
 // }
 
-router.get('/loggedin', (req, res, next) => {
-  // if (req.isAuthenticated()) {
-  //   res.status(200).json(req.user)
-  //   return
-  // }
-  // res.status(403).json({ message: 'Unauthorized' })
-  res.send(req.user)
-})
-
 router.get(`/user-list/:username`, (req, res) => {
   console.log(req.user)
   const { username } = req.params
@@ -43,9 +34,11 @@ router.post('/add-pokemon', (req, res) => {
     .then((result) => {
       if (result) {
         if (!req.user.pokedex.includes(result._id)) {
-          User.findByIdAndUpdate(req.user._id, {
-            $push: { pokedex: result._id },
-          }).then((result) => {
+          User.findByIdAndUpdate(
+            req.user._id,
+            { $push: { pokedex: result._id } },
+            { new: true }
+          ).then((result) => {
             console.log(result)
             res.send({ message: 'Pokemon added successfully', result })
           })
