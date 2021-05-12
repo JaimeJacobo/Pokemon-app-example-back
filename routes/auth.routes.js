@@ -42,7 +42,7 @@ router.post('/signup', (req, res, next) => {
 })
 
 /* LOG IN */
-router.post('/login', (req, res) => {
+router.post('/login', checkForAuth, (req, res) => {
   passport.authenticate('local', (err, user, failureDetails) => {
     if (err) {
       console.log(err)
